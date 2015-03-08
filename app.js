@@ -82,8 +82,6 @@ angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', funct
 			config['headers'] = custom_header;
 
 
-		console.log(config);
-
 		$http(config).success(function(data,status,headers,config){
 			var h = headers();
 			$scope.parseResponse(data,status,h);
@@ -99,7 +97,10 @@ angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', funct
 		var beautyHeaders = "";
 
 		try{
-			beautyData = JSON.stringify(JSON.parse(data),null,"\t");
+			if(typeof data === 'object')
+				beautyData = JSON.stringify(data,null,"    ");
+			else
+				beautyData = data;
 		}catch(e){
 			beautyData = data;
 		}

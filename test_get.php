@@ -1,5 +1,1 @@
-<?php
-
-echo "It works like a charm";
-
-?>
+{"teste" : "","array":[{"a":1,"b":2},{"c":3}]}
