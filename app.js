@@ -8,6 +8,12 @@ function requestAsForm(){
 
 angular.module('RequestBuilder',[]);
 
+angular.module('RequestBuilder').filter('html',['$sce', function($sce){
+	return function(input){
+		return $sce.trustAsHtml(input);
+	};
+}]);
+
 angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', function($scope,$http){
 	$scope.data = {
 		'url' : '/RequestBuilder/test_get.php',
@@ -15,6 +21,7 @@ angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', funct
 		'method' : 'GET',
 		'form' : 'PAYLOAD',
 		'headerFields' : 1,
+		'renderType' : 'RAW',
 		'header' : [
 			{
 				'key':'',
@@ -33,7 +40,7 @@ angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', funct
 	$scope.resp = {
 		status : '-',
 		header: '-',
-		data: '-',
+		data: '-'
 	}
 
 

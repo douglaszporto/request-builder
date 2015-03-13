@@ -54,11 +54,16 @@
 
 	<div id="request-result">
 		Status:<br />
-		<div class="pre">{{resp.status}}</div><br/><br/>
+		<pre class="pre">{{resp.status}}</pre><br/><br/>
 		Headers: <br/>
 		<pre class="pre">{{ResponseHeaders()}}</pre><br/><br/>
-		Data:<br/>
-		<pre class="pre">{{resp.data}}</pre><br/><br/>
+		Data:
+		<div id="request-result-data-type">
+			<input type="radio" ng-model="data.renderType" id="response-type-raw" name="response-type" value="RAW" /><label for="response-type-raw">RAW</label>
+			<input type="radio" ng-model="data.renderType" id="response-type-html" name="response-type" value="HTML" /><label for="response-type-html">HTML</label>
+		</div><br/>
+		<pre class="pre data" ng-show="data.renderType == 'RAW'">{{resp.data}}</pre>
+		<div class="pre data" ng-show="data.renderType == 'HTML'" ng-bind-html="resp.data | html"></div><br/><br/>
 	</div>
 
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular.min.js"></script>
