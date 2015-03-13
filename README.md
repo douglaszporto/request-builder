@@ -16,6 +16,11 @@ Você **NÃO** pode enviar requests para outros domínios (XSRF)
 ##TODO##
 Permitir o envio de plain/text na requisição
 
+##Versões##
+* **1.2**: Escolha entre Raw e Html na visualização da resposta
+* **1.1**: Apresentação de JSON formatado na data
+* **1.0**: Funcionalidade básica
+
 
 
 
@@ -38,3 +43,8 @@ You **CANNOT** send requests to another domains (XSRF)
 
 ##TODO##
 Allow send plain/text requests.
+
+##Versões##
+* **1.2**: Choose between Raw and Html (response view)
+* **1.1**: JSON format on data view
+* **1.0**: Basic Features
