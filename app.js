@@ -14,10 +14,9 @@ angular.module('RequestBuilder').filter('html',['$sce', function($sce){
 	};
 }]);
 
-angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', function($scope,$http){
+angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
 	$scope.data = {
-		'url' : '/RequestBuilder/test_get.php',
-		'host' : document.location.host,
+		'url' : 'http://localhost',
 		'method' : 'GET',
 		'form' : 'PAYLOAD',
 		'headerFields' : 1,
@@ -40,8 +39,14 @@ angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', funct
 	$scope.resp = {
 		status : '-',
 		header: '-',
-		data: '-'
-	}
+		data: '-',
+		time: '-',
+	};
+
+	$scope.timeStart = 0;
+	$scope.savedItems = [];
+	$scope.savedCurrent = 0;
+	$scope.savedLast = 0;
 
 
 	$scope.updateFields = function(type){
@@ -59,9 +64,63 @@ angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', funct
 				'value': obj.value
 			});
 		}
+
+		$scope.savedLast = 0;
 	};
 
+	$scope.save = function(){
+		var copy = {};
+		for(var i in $scope.data)
+			if($scope.data.hasOwnProperty(i))
+				copy[i] = $scope.data[i];
+
+		copy.id = performance.now();
+
+		$scope.savedItems.push(copy);
+
+		$scope.persistSaved();
+	};
+
+	$scope.deleteSaved = function(e, id){
+		e.stopPropagation();
+		e.preventDefault();
+
+		for(var i in $scope.savedItems)
+			if($scope.savedItems[i].id === id){
+				$scope.savedItems.splice(i,1);
+				break;
+			}
+
+		$scope.persistSaved();
+	}
+
+	$scope.restoreSaved = function(id){
+		var item = null;
+		for(var i in $scope.savedItems)
+			if($scope.savedItems[i].id === id){
+				item = $scope.savedItems[i];
+				break;
+			}
+
+		if(item === null)
+			return;
+
+		for(var i in $scope.data)
+			if($scope.data.hasOwnProperty(i) && item.hasOwnProperty(i))
+				$scope.data[i] = item[i];
+
+		$scope.savedCurrent = item.id;
+		$scope.savedLast    = item.id;
+	}
+
+	$scope.persistSaved = function(){
+		localStorage.setItem("savedItems", JSON.stringify($scope.savedItems));
+	}
+
 	$scope.send = function(){
+
+		$scope.timeStart = performance.now();
+		$rootScope.$broadcast('loaderStart');
 
 		var custom_data   = {}
 		var custom_header = {}
@@ -89,12 +148,16 @@ angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', funct
 			config['headers'] = custom_header;
 
 
-		$http(config).success(function(data,status,headers,config){
-			var h = headers();
-			$scope.parseResponse(data,status,h);
-		}).error(function(data,status,headers,config){
-			var h = headers();
-			$scope.parseResponse(data,status,h);
+		$http(config).then(function(response){
+			var h = response.headers();
+			$scope.parseResponse(response.data,response.status,h);
+		},function(response){
+			var h = response.headers();
+			if(response.status === -1){
+				response.status = 0;
+				response.data = "Não encontrado";
+			}
+			$scope.parseResponse(response.data,response.status,h);
 		});
 	};
 
@@ -115,6 +178,9 @@ angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', funct
 		$scope.resp.data    = beautyData;
 		$scope.resp.status  = status;
 		$scope.resp.headers = headers;
+		$scope.resp.time    = Math.round(performance.now() - $scope.timeStart) + "ms";
+
+		$rootScope.$broadcast('loaderDone');
 	};
 
 	$scope.ResponseHeaders = function(){
@@ -124,4 +190,44 @@ angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$http', funct
 		return ret.length < 1 ? '-' : ret;
 	}
 
+	$scope.initialize = function(){
+		console.log(localStorage.getItem("savedItems"));
+		if(localStorage.getItem("savedItems") !== null)
+			$scope.savedItems = JSON.parse(localStorage.getItem("savedItems"));
+	};
+
+	$scope.initialize();
 }]);
+
+
+angular.module('RequestBuilder').directive("rbLoader", function(){
+	return {
+		'restrict' : 'A',
+		'link' : function(scope, element, attrs, controller){
+			scope.$on('loaderDone', function(){
+				$(element).removeClass('visible');
+			});
+
+			scope.$on('loaderStart', function(){
+				$(element).addClass('visible');
+			});
+		}
+	};
+});
+
+
+angular.module('RequestBuilder').directive("rbNanoScroller", function(){
+	return {
+		'restrict' : 'A',
+		'link' : function(scope, element, attrs, controller){
+			$(element).height(window.innerHeight - 150);
+
+			scope.$on('loaderDone', function(){
+				setTimeout(function(){
+					console.log("update");
+					$(element).nanoScroller();
+				},1);
+			});
+		}
+	};
+});

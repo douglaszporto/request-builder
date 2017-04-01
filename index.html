@@ -3,71 +3,107 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Request Builder</title>
+	<link rel="stylesheet" href="css/nanoscroller.css">
+	<link rel="stylesheet" href="css/ionicons.min.css">
+	<link rel="stylesheet" href="css/style.css">
 
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
-	<link rel="stylesheet" href="style.css">
+	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+	<script type="text/javascript" src="libs/jquery-3.2.0.min.js"></script>
+	<script type="text/javascript" src="libs/nanoscroller.js"></script>
+	<script type="text/javascript" src="libs/angular.min.js"></script>
+	<script type="text/javascript" src="app.js"></script>
+
+	<script>if (window.module) module = window.module;</script>
 
 </head>
 <body ng-controller="MainCtrl">
-	<h1>Request Builder</h1>
+	<div id="logo-header">
+		<img alt="Request Builder" src="img/logo.png" id="logo">
+	</div>
 
-	<div id="request-options">
-		<input type="text" placeholder="http://path-to-request" ng-model="data.url">
-		<br />
-		<div class="request-type">
-			<input type="radio" ng-model="data.method" id="request-type-get" name="request-type" value="GET" /><label for="request-type-get">GET</label>
-			<input type="radio" ng-model="data.method" id="request-type-post" name="request-type" value="POST" /><label for="request-type-post">POST</label>
-			<input type="radio" ng-model="data.method" id="request-type-put" name="request-type" value="PUT" /><label for="request-type-put">PUT</label>
-			<input type="radio" ng-model="data.method" id="request-type-delete" name="request-type" value="DELETE" /><label for="request-type-delete">DELETE</label>
-			<input type="radio" ng-model="data.method" id="request-type-head" name="request-type" value="HEAD" /><label for="request-type-head">HEAD</label>
-			<input type="radio" ng-model="data.method" id="request-type-patch" name="request-type" value="PATCH" /><label for="request-type-patch">PATCH</label>
-		</div>
-		<div class="request-type">
-			<input type="radio" ng-model="data.form" id="request-form-payload" name="request-form" value="PAYLOAD" /><label for="request-type-get">PAYLOAD</label>
-			<input type="radio" ng-model="data.form" id="request-form-form" name="request-form" value="FORM ENCODE" /><label for="request-type-post">FORM ENCODE</label>
-		</div>
-		<br/>
-		<div class="half1">
-			<div class="title">HEADER FIELDS</div><input type="number" step="1" min="1" max="99" ng-model="data.headerFields" ng-change="updateFields('header')"/><br />
-			<div ng-repeat="h in data.header" class="data-row">
-				<input type="text" class="half" ng-model="h.key" placeholder="Header Key" />
-				<input type="text" class="half" ng-model="h.value" placeholder="Header Value" />
-			</div>
-		</div>
-		<div class="half2">
-			<div class="title">DATA FIELDS</div><input type="number" step="1" min="1" max="99" ng-model="data.dataFields" ng-change="updateFields('data')"/><br />
-			<div ng-repeat="d in data.data" class="data-row">
-				<input type="text" class="half" ng-model="d.key" placeholder="Data Key" />
-				<input type="text" class="half" ng-model="d.value" placeholder="Data Value" />
-			</div>
-		</div>
-		<br />
-		<button ng-click="send()">SEND</button>
-		<br />
-		<br />
+	<div id="loader" rb-loader></div>
 
-		<div id="request-built">
-			{{data.method}} {{data.url}} HTTP/1.1<br/><br/>
-			host: {{data.host}}<br/>
+	<div id="request-options" class="nano" rb-nano-scroller>
+		<div class="nano-content">
+			URL:<br />
+			<input type="text" placeholder="http://path-to-request" ng-model="data.url" ng-change="savedLast = 0">
+			<br />
+			<div class="option-label">METHOD:</div>
+			<div class="request-type">
+				<input type="radio" ng-model="data.method" ng-change="savedLast = 0" id="request-type-get" name="request-type" value="GET" /><label class="first" ng-class="data.method === 'GET' ? 'selected' : ''" for="request-type-get">GET</label>
+				<input type="radio" ng-model="data.method" ng-change="savedLast = 0" id="request-type-post" name="request-type" value="POST" /><label ng-class="data.method === 'POST' ? 'selected' : ''" for="request-type-post">POST</label>
+				<input type="radio" ng-model="data.method" ng-change="savedLast = 0" id="request-type-put" name="request-type" value="PUT" /><label ng-class="data.method === 'PUT' ? 'selected' : ''" for="request-type-put">PUT</label>
+				<input type="radio" ng-model="data.method" ng-change="savedLast = 0" id="request-type-delete" name="request-type" value="DELETE" /><label ng-class="data.method === 'DELETE' ? 'selected' : ''" for="request-type-delete">DELETE</label>
+				<input type="radio" ng-model="data.method" ng-change="savedLast = 0" id="request-type-head" name="request-type" value="HEAD" /><label ng-class="data.method === 'HEAD' ? 'selected' : ''" for="request-type-head">HEAD</label>
+				<input type="radio" ng-model="data.method" ng-change="savedLast = 0" id="request-type-patch" name="request-type" value="PATCH" /><label ng-class="data.method === 'PATCH' ? 'selected' : ''" class="last" for="request-type-patch">PATCH</label>
+			</div><br />
+			<div class="option-label">SEND AS:</div>
+			<div class="request-type">
+				<input type="radio" ng-model="data.form" ng-change="savedLast = 0" id="request-form-payload" name="request-form" value="PAYLOAD" /><label class="first" ng-class="data.form === 'PAYLOAD' ? 'selected' : ''" for="request-form-payload">PAYLOAD</label>
+				<input type="radio" ng-model="data.form" ng-change="savedLast = 0" id="request-form-form" name="request-form" value="FORMENCODE" /><label class="last" ng-class="data.form !== 'PAYLOAD' ? 'selected' : ''" for="request-form-form">FORM ENCODE</label>
+			</div>
+			<br/>
+			<div class="half1">
+				<div class="quantity">
+					<div class="title">HEADER FIELDS:</div><input type="number" step="1" min="1" max="99" ng-model="data.headerFields" ng-change="updateFields('header')"/><br />
+				</div>
+				<div ng-repeat="h in data.header" ng-class="{'first':$first, 'last': $last}" class="data-row">
+					<input type="text" class="half first" ng-model="h.key" ng-change="savedLast = 0" placeholder="Header Key" />
+					<input type="text" class="half last" ng-model="h.value" ng-change="savedLast = 0" placeholder="Header Value" /><br />
+				</div>
+			</div>
+			<div class="half2">
+				<div class="quantity">
+					<div class="title">DATA FIELDS</div><input type="number" step="1" min="1" max="99" ng-model="data.dataFields" ng-change="updateFields('data')"/><br />
+				</div>
+				<div ng-repeat="d in data.data" ng-class="{'first':$first, 'last': $last}" class="data-row">
+					<input type="text" class="half first" ng-model="d.key" ng-change="savedLast = 0" placeholder="Data Key" />
+					<input type="text" class="half last" ng-model="d.value" ng-change="savedLast = 0" placeholder="Data Value" /><br />
+				</div>
+			</div>
+			<br />
+			<button ng-click="save()" id="save">SAVE</button>
+			<div id="send-wrapper">
+				<button ng-click="send()" id="send">SEND</button>
+			</div>
+			<br />
+			<br />
+
+			<div id="request-saved">
+				<div class="saved-item" ng-repeat="item in savedItems track by item.id" ng-click="restoreSaved(item.id)" ng-class="{'selected' : savedLast === item.id}">
+					<div class="saved-method">{{item.method}}</div>
+					<div class="saved-url">{{item.url}}</div>
+					<div class="saved-remove ion-trash-b" ng-click="deleteSaved($event, item.id)"></div>
+					<br/ >
+				</div>
+			</div>
 		</div>
 	</div>
 
-	<div id="request-result">
-		Status:<br />
-		<pre class="pre">{{resp.status}}</pre><br/><br/>
-		Headers: <br/>
-		<pre class="pre">{{ResponseHeaders()}}</pre><br/><br/>
-		Data:
-		<div id="request-result-data-type">
-			<input type="radio" ng-model="data.renderType" id="response-type-raw" name="response-type" value="RAW" /><label for="response-type-raw">RAW</label>
-			<input type="radio" ng-model="data.renderType" id="response-type-html" name="response-type" value="HTML" /><label for="response-type-html">HTML</label>
-		</div><br/>
-		<pre class="pre data" ng-show="data.renderType == 'RAW'">{{resp.data}}</pre>
-		<div class="pre data" ng-show="data.renderType == 'HTML'" ng-bind-html="resp.data | html"></div><br/><br/>
+	<div id="request-result" class="nano" rb-nano-scroller>
+		<div class="nano-content">
+			<div class="result-half1">STATUS:</div>
+			<div class="result-half2">TIME:</div>
+			<br />
+			<pre class="pre result-half1">{{resp.status}}</pre>
+			<pre class="pre result-half2">{{resp.time}}</pre>
+			<br/><br/>
+			HEADERS: <br/>
+			<pre class="pre">{{ResponseHeaders()}}</pre><br/><br/>
+			DATA:
+			<pre class="pre data" ng-show="data.renderType == 'RAW'">{{resp.data}}</pre>
+		</div>
 	</div>
 
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular.min.js"></script>
-	<script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="app.js"></script>
+	<script>
+		document.addEventListener("keydown", function (e) {
+			if (e.which === 123) {
+				require('electron').remote.getCurrentWindow().toggleDevTools();
+			} else if (e.which === 116) {
+				location.reload();
+			}
+		});
+	</script>
 </body>
 </html>

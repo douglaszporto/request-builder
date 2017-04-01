@@ -1,0 +1,35 @@
+{
+  "name": "request-builder",
+  "version": "1.2.0",
+  "description": "Request Builder for testing API interfaces",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+    "pack": "build --dir",
+    "dist": "build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/douglaszporto/request-builder.git"
+  },
+  "keywords": [
+    "API",
+    "REST",
+    "Restful",
+    "Electron",
+    "Request"
+  ],
+  "author": "Douglas Zanotta <dzanotta.com.br>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/douglaszporto/request-builder/issues"
+  },
+  "build": {
+    "appId": "br.com.dzanotta.requestbuilder"
+  },
+  "homepage": "http://douglaszporto.github.io/request-builder/",
+  "devDependencies": {
+    "electron": "^1.6.2",
+    "electron-prebuilt": "^1.4.13"
+  }
+}
