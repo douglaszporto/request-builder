@@ -1,4 +1,4 @@
-#Request Builder#
+# Request Builder #
 
 Resquest Builder é uma ferramenta para simulação de requisições http.
 Você pode:
@@ -6,18 +6,25 @@ Você pode:
 * Enviar dados tanto por REQUEST PAYLOAD quanto por FORM ENCODE
 * Enviar _headers_ customizados
 * Enviar dados customizados
+* Salvar requisições para reenviar posteriormente
 
-##Instalação##
-Clone este repositório e coloque-o no mesmo domínio das url que você deseja testar.
+## Requisitos ##
 
-##Limitações##
-Você **NÃO** pode enviar requests para outros domínios (XSRF)
+* Node.js
+* NPM
 
-##TODO##
-Permitir o envio de plain/text na requisição
+## Instalação ##
 
-##Versões##
-* **1.2**: Escolha entre Raw e Html na visualização da resposta
+```
+git clone https://github.com/douglaszporto/request-builder
+cd request-builder
+npm install
+npm start
+```
+
+## Versões ##
+
+* **1.2**: Encapsulado em uma Aplicação Electron
 * **1.1**: Apresentação de JSON formatado na data
 * **1.0**: Funcionalidade básica
 
@@ -28,23 +35,30 @@ Permitir o envio de plain/text na requisição
 ----
 
 
-Resquest Builder is a tool for http request simulation.
-You can:
+Resquest Builder is a tool to simulate http requests.
+You may:
 * Simulate GET,POST,PUT,DELETE,PATCH and HEAD requests.
-* Send data both in REQUEST PAYLOAD or FORM ENCODE way.
+* Send data as REQUEST PAYLOAD or FORM ENCODE
 * Send custom _headers_
 * Send custom data
+* Save requests so send in other moment
 
-##Instalation##
-Clone this repo and put it in same domain of url that you want to test.
+## Dependencies ##
 
-##Limitations##
-You **CANNOT** send requests to another domains (XSRF)
+* Node.js
+* NPM
 
-##TODO##
-Allow send plain/text requests.
+## Installing ##
 
-##Versões##
-* **1.2**: Choose between Raw and Html (response view)
+```
+git clone https://github.com/douglaszporto/request-builder
+cd request-builder
+npm install
+npm start
+```
+
+## Versions ##
+
+* **1.2**: Embed application into Electron App
 * **1.1**: JSON format on data view
 * **1.0**: Basic Features
