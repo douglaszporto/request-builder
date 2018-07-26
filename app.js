@@ -180,6 +180,15 @@ angular.module('RequestBuilder').controller('MainCtrl',['$scope', '$rootScope', 
 		$scope.resp.headers = headers;
 		$scope.resp.time    = Math.round(performance.now() - $scope.timeStart) + "ms";
 
+		if ($scope.resp.status >= 400) {
+			var fs = require('fs');
+			try { 
+				fs.writeFileSync('error.html', beautyData, 'utf-8'); 
+			} catch(e) { 
+				alert('Failed to save the file !');
+			}
+		}
+
 		$rootScope.$broadcast('loaderDone');
 	};
 
